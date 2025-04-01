@@ -264,29 +264,29 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-4 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+          <div className="flex items-center space-x-2 sm:space-x-4 w-full">
             <img
               src={ceprunsaLogo || "/placeholder.svg"}
               alt="CEPRUNSA Logo"
-              className="h-12"
+              className="h-10 sm:h-12"
             />
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
               Dashboard de Cursos de Nivelación
             </h1>
           </div>
           <img
             src={unsaLogo || "/placeholder.svg"}
             alt="UNSA Logo"
-            className="h-16"
+            className="h-12 sm:h-16"
           />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-64">
+      <main className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="w-full sm:w-64">
               <Label htmlFor="alumnosPorSalon">Alumnos por Salón:</Label>
               <Input
                 id="alumnosPorSalon"
@@ -297,39 +297,91 @@ function App() {
                 className="mt-1"
               />
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 mt-2 sm:mt-0">
               Modifique este valor para recalcular el número de salones, horas y
               costos asociados.
             </div>
           </div>
         </div>
 
+        {/* Modificar la estructura de los tabs para asegurar que el contenido se muestre correctamente */}
+        {/* Cambiar la estructura de Tabs para que sea más robusta */}
         <Tabs
           defaultValue="resumen"
           value={activeTab}
           onValueChange={setActiveTab}
-          className="space-y-4"
+          className="space-y-0 relative"
         >
-          <TabsList className="grid grid-cols-5 w-full">
-            <TabsTrigger value="resumen">Resumen</TabsTrigger>
-            <TabsTrigger value="cursos">Cursos por Área</TabsTrigger>
-            <TabsTrigger value="desglose">Desglose de Horas</TabsTrigger>
-            <TabsTrigger value="costeo">Costeo</TabsTrigger>
-            <TabsTrigger value="cronograma">Cronograma</TabsTrigger>
-          </TabsList>
+          {/* Reemplazar la sección de tabs móvil con esta implementación: */}
+          <div className="block sm:hidden mb-4">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value)}
+                className="w-full p-3 bg-white border-none text-sm font-medium focus:ring-0 focus:outline-none"
+              >
+                <option value="resumen">Resumen</option>
+                <option value="cursos">Cursos por Área</option>
+                <option value="desglose">Desglose de Horas</option>
+                <option value="costeo">Costeo</option>
+                <option value="cronograma">Cronograma</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="hidden sm:block bg-white rounded-t-lg shadow-sm relative z-10">
+            <TabsList className="grid grid-cols-5 w-full bg-white p-0 rounded-t-lg">
+              <TabsTrigger
+                value="resumen"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Resumen
+              </TabsTrigger>
+              <TabsTrigger
+                value="cursos"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Cursos por Área
+              </TabsTrigger>
+              <TabsTrigger
+                value="desglose"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Desglose de Horas
+              </TabsTrigger>
+              <TabsTrigger
+                value="costeo"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Costeo
+              </TabsTrigger>
+              <TabsTrigger
+                value="cronograma"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Cronograma
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Pestaña de Resumen */}
-          <TabsContent value="resumen" className="space-y-4">
+          {/* Asegurar que todos los TabsContent tengan el mismo z-index */}
+          <TabsContent
+            value="resumen"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Postulantes a Nivelar</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Postulantes a Nivelar
+                  </CardTitle>
                   <CardDescription>
                     Distribución por área académica
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="h-80">
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="h-60 sm:h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -340,7 +392,7 @@ function App() {
                           label={({ name, percent }) =>
                             `${name}: ${(percent * 100).toFixed(0)}%`
                           }
-                          outerRadius={80}
+                          outerRadius={window.innerWidth < 640 ? 60 : 80}
                           fill="#8884d8"
                           dataKey="value"
                         >
@@ -362,12 +414,14 @@ function App() {
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Horas por Curso</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Horas por Curso
+                  </CardTitle>
                   <CardDescription>Distribución total de horas</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="h-80">
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="h-60 sm:h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={horasData}
@@ -376,7 +430,11 @@ function App() {
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" />
-                        <YAxis type="category" dataKey="name" />
+                        <YAxis
+                          type="category"
+                          dataKey="name"
+                          tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+                        />
                         <Tooltip
                           formatter={(value) => [`${value} horas`, "Total"]}
                         />
@@ -390,38 +448,44 @@ function App() {
             </div>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Resumen General</CardTitle>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Resumen General
+                </CardTitle>
                 <CardDescription>
                   Datos principales del programa de nivelación
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-medium">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-medium">
                       Total de Postulantes
                     </h3>
-                    <p className="text-3xl font-bold">5,519</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-2xl sm:text-3xl font-bold">5,519</p>
+                    <p className="text-xs sm:text-sm text-gray-500">
                       Distribuidos en {totalSalones} salones
                     </p>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-medium">Total de Horas</h3>
-                    <p className="text-3xl font-bold">
+                  <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-medium">
+                      Total de Horas
+                    </h3>
+                    <p className="text-2xl sm:text-3xl font-bold">
                       {totalHoras.toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs sm:text-sm text-gray-500">
                       Distribuidas en 7 cursos
                     </p>
                   </div>
-                  <div className="bg-amber-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-medium">Costo Total</h3>
-                    <p className="text-3xl font-bold">
+                  <div className="bg-amber-50 p-3 sm:p-4 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-medium">
+                      Costo Total
+                    </h3>
+                    <p className="text-2xl sm:text-3xl font-bold">
                       S/ {costoTotal.toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs sm:text-sm text-gray-500">
                       Incluye dictado y monitoreo
                     </p>
                   </div>
@@ -431,47 +495,64 @@ function App() {
           </TabsContent>
 
           {/* Pestaña de Cursos por Área */}
-          <TabsContent value="cursos" className="space-y-4">
+          <TabsContent
+            value="cursos"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {salonesData.map((area, index) => (
                 <Card key={index}>
                   <CardHeader
                     className={
                       area.name === "Biomédicas"
-                        ? "bg-green-100"
+                        ? "bg-green-100 p-4 sm:p-6"
                         : area.name === "Ingenierías"
-                        ? "bg-blue-50"
-                        : "bg-orange-100"
+                        ? "bg-blue-50 p-4 sm:p-6"
+                        : "bg-orange-100 p-4 sm:p-6"
                     }
                   >
-                    <CardTitle>{area.name}</CardTitle>
+                    <CardTitle className="text-lg sm:text-2xl">
+                      {area.name}
+                    </CardTitle>
                     <CardDescription>
                       60 horas de nivelación por salón
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Curso</TableHead>
-                          <TableHead>Horas por Salón</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {area.cursos.map((curso, i) => (
-                          <TableRow key={i}>
-                            <TableCell>{curso}</TableCell>
-                            <TableCell>20</TableCell>
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-xs sm:text-sm">
+                              Curso
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm">
+                              Horas por Salón
+                            </TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                      <p className="font-medium">
+                        </TableHeader>
+                        <TableBody>
+                          {area.cursos.map((curso, i) => (
+                            <TableRow key={i}>
+                              <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                                {curso}
+                              </TableCell>
+                              <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                                20
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <div className="mt-4 p-2 sm:p-3 bg-gray-50 rounded-md">
+                      <p className="font-medium text-xs sm:text-sm">
                         Postulantes: {area.postulantes.toLocaleString()}
                       </p>
-                      <p className="font-medium">Salones: {area.salones}</p>
-                      <p className="font-medium">
+                      <p className="font-medium text-xs sm:text-sm">
+                        Salones: {area.salones}
+                      </p>
+                      <p className="font-medium text-xs sm:text-sm">
                         Horas totales: {(area.salones ?? 0) * 60}
                       </p>
                     </div>
@@ -481,131 +562,205 @@ function App() {
             </div>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Cálculo de Salones</CardTitle>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Cálculo de Salones
+                </CardTitle>
                 <CardDescription>
                   {alumnosPorSalon} alumnos por salón
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Área</TableHead>
-                      <TableHead>Postulantes</TableHead>
-                      <TableHead>Salones</TableHead>
-                      <TableHead>Horas Totales</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {salonesData.map((area, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{area.name}</TableCell>
-                        <TableCell>
-                          {area.postulantes.toLocaleString()}
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs sm:text-sm">
+                          Área
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Postulantes
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Salones
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Horas Totales
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {salonesData.map((area, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {area.name}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {area.postulantes.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {area.salones}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {((area.salones ?? 0) * 60).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      <TableRow className="font-medium">
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          TOTAL
                         </TableCell>
-                        <TableCell>{area.salones}</TableCell>
-                        <TableCell>
-                          {((area.salones ?? 0) * 60).toLocaleString()}
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          5,519
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          {totalSalones}
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          {totalHoras.toLocaleString()}
                         </TableCell>
                       </TableRow>
-                    ))}
-                    <TableRow className="font-medium">
-                      <TableCell>TOTAL</TableCell>
-                      <TableCell>5,519</TableCell>
-                      <TableCell>{totalSalones}</TableCell>
-                      <TableCell>{totalHoras.toLocaleString()}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Pestaña de Desglose de Horas */}
-          <TabsContent value="desglose" className="space-y-4">
+          <TabsContent
+            value="desglose"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Desglose por Curso y Área</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Desglose por Curso y Área
+                  </CardTitle>
                   <CardDescription>Horas totales por curso</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Área</TableHead>
-                        <TableHead>Curso</TableHead>
-                        <TableHead>Horas Totales</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {horasPorCursoArea.map((item, index) => (
-                        <TableRow key={index}>
-                          {index === 0 ||
-                          horasPorCursoArea[index - 1].area !== item.area ? (
-                            <TableCell rowSpan={3} className="font-medium">
-                              {item.area}
-                            </TableCell>
-                          ) : null}
-                          <TableCell>{item.curso}</TableCell>
-                          <TableCell>{item.horas.toLocaleString()}</TableCell>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-xs sm:text-sm">
+                            Área
+                          </TableHead>
+                          <TableHead className="text-xs sm:text-sm">
+                            Curso
+                          </TableHead>
+                          <TableHead className="text-xs sm:text-sm">
+                            Horas Totales
+                          </TableHead>
                         </TableRow>
-                      ))}
-                      <TableRow className="font-medium bg-gray-50">
-                        <TableCell colSpan={2}>Total</TableCell>
-                        <TableCell>{totalHoras.toLocaleString()}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {horasPorCursoArea.map((item, index) => (
+                          <TableRow key={index}>
+                            {index === 0 ||
+                            horasPorCursoArea[index - 1].area !== item.area ? (
+                              <TableCell
+                                rowSpan={3}
+                                className="font-medium text-xs sm:text-sm py-2 sm:py-4"
+                              >
+                                {item.area}
+                              </TableCell>
+                            ) : null}
+                            <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                              {item.curso}
+                            </TableCell>
+                            <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                              {item.horas.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow className="font-medium bg-gray-50">
+                          <TableCell
+                            colSpan={2}
+                            className="text-xs sm:text-sm py-2 sm:py-4"
+                          >
+                            Total
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {totalHoras.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Desglose Final por Curso</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Desglose Final por Curso
+                  </CardTitle>
                   <CardDescription>Horas finales por curso</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Curso</TableHead>
-                        <TableHead>Horas Finales</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {horasPorCursoFinal.map((item, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{item.curso}</TableCell>
-                          <TableCell>{item.horas.toLocaleString()}</TableCell>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-xs sm:text-sm">
+                            Curso
+                          </TableHead>
+                          <TableHead className="text-xs sm:text-sm">
+                            Horas Finales
+                          </TableHead>
                         </TableRow>
-                      ))}
-                      <TableRow className="font-medium bg-gray-50">
-                        <TableCell>Total</TableCell>
-                        <TableCell>{totalHoras.toLocaleString()}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {horasPorCursoFinal.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                              {item.curso}
+                            </TableCell>
+                            <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                              {item.horas.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow className="font-medium bg-gray-50">
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Total
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {totalHoras.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Visualización de Horas por Curso</CardTitle>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Visualización de Horas por Curso
+                </CardTitle>
                 <CardDescription>Distribución gráfica</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="h-80">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="h-60 sm:h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={horasData}
                       margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+                      />
+                      <YAxis
+                        tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+                      />
                       <Tooltip
                         formatter={(value) => [`${value} horas`, "Total"]}
                       />
@@ -618,42 +773,64 @@ function App() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Profesores por Curso</CardTitle>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Profesores por Curso
+                </CardTitle>
                 <CardDescription>
                   Considerando máximo 60 horas por profesor
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Curso</TableHead>
-                      <TableHead>Horas Totales</TableHead>
-                      <TableHead>Profesores Necesarios</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {profesoresData.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>
-                          {horasData[index].horas.toLocaleString()}
-                        </TableCell>
-                        <TableCell>{item.profesores}</TableCell>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs sm:text-sm">
+                          Curso
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Horas Totales
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Profesores Necesarios
+                        </TableHead>
                       </TableRow>
-                    ))}
-                    <TableRow className="font-medium bg-gray-50">
-                      <TableCell>Total</TableCell>
-                      <TableCell>{totalHoras.toLocaleString()}</TableCell>
-                      <TableCell>{totalProfesores}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {profesoresData.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {item.name}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {horasData[index].horas.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {item.profesores}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      <TableRow className="font-medium bg-gray-50">
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          Total
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          {totalHoras.toLocaleString()}
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          {totalProfesores}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
 
-                <div className="mt-6 p-4 bg-blue-50 rounded-md">
-                  <h3 className="font-medium mb-2">Notas:</h3>
-                  <ul className="list-disc pl-5 space-y-1">
+                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-md">
+                  <h3 className="font-medium mb-2 text-sm sm:text-base">
+                    Notas:
+                  </h3>
+                  <ul className="list-disc pl-4 sm:pl-5 space-y-1 text-xs sm:text-sm">
                     <li>
                       Cada profesor puede dictar un máximo de 60 horas en total.
                     </li>
@@ -671,138 +848,180 @@ function App() {
               </CardContent>
             </Card>
 
-            <div className="h-80 mt-6">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={profesoresData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip
-                    formatter={(value) => [`${value} profesores`, "Total"]}
-                  />
-                  <Legend />
-                  <Bar dataKey="profesores" fill="#6366f1" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <Card className="mt-4 sm:mt-6">
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Gráfico de Profesores por Curso
+                </CardTitle>
+                <CardDescription>
+                  Visualización de la distribución de profesores
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="h-60 sm:h-80 bg-gray-50 p-4 rounded-lg">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={profesoresData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+                      />
+                      <YAxis
+                        tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+                      />
+                      <Tooltip
+                        formatter={(value) => [`${value} profesores`, "Total"]}
+                      />
+                      <Legend />
+                      <Bar dataKey="profesores" fill="#6366f1" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Pestaña de Costeo */}
-          <TabsContent value="costeo" className="space-y-4">
+          <TabsContent
+            value="costeo"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Dictado de Clases</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Dictado de Clases
+                  </CardTitle>
                   <CardDescription>Costos asociados al dictado</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Pago por Hora
-                        </TableCell>
-                        <TableCell>S/ 40.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Horas Totales
-                        </TableCell>
-                        <TableCell>{totalHoras.toLocaleString()}</TableCell>
-                      </TableRow>
-                      <TableRow className="bg-blue-50">
-                        <TableCell className="font-medium">
-                          Pago Total Dictado de clases
-                        </TableCell>
-                        <TableCell className="font-bold">
-                          S/ {costoDictado.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            Pago por Hora
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            S/ 40.00
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            Horas Totales
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {totalHoras.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="bg-blue-50">
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            Pago Total Dictado de clases
+                          </TableCell>
+                          <TableCell className="font-bold text-xs sm:text-sm py-2 sm:py-4">
+                            S/ {costoDictado.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Personal de Monitoreo</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Personal de Monitoreo
+                  </CardTitle>
                   <CardDescription>
                     Costos asociados al monitoreo
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          Pago por Monitor
-                        </TableCell>
-                        <TableCell>S/ 500.00</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          # de Monitores
-                        </TableCell>
-                        <TableCell>{totalSalones}</TableCell>
-                      </TableRow>
-                      <TableRow className="bg-green-50">
-                        <TableCell className="font-medium">
-                          Pago Total por Personal de Monitoreo
-                        </TableCell>
-                        <TableCell className="font-bold">
-                          S/ {costoMonitoreo.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            Pago por Monitor
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            S/ 500.00
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            # de Monitores
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {totalSalones}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="bg-green-50">
+                          <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                            Pago Total por Personal de Monitoreo
+                          </TableCell>
+                          <TableCell className="font-bold text-xs sm:text-sm py-2 sm:py-4">
+                            S/ {costoMonitoreo.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Costo Total</CardTitle>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Costo Total
+                </CardTitle>
                 <CardDescription>
                   Resumen de costos del programa
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Pago Total Dictado de clases
-                      </TableCell>
-                      <TableCell>S/ {costoDictado.toLocaleString()}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Pago Total por Personal de Monitoreo
-                      </TableCell>
-                      <TableCell>
-                        S/ {costoMonitoreo.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="bg-amber-50">
-                      <TableCell className="font-medium text-lg">
-                        Costo Total
-                      </TableCell>
-                      <TableCell className="font-bold text-lg">
-                        S/ {costoTotal.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                          Pago Total Dictado de clases
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          S/ {costoDictado.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium text-xs sm:text-sm py-2 sm:py-4">
+                          Pago Total por Personal de Monitoreo
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          S/ {costoMonitoreo.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow className="bg-amber-50">
+                        <TableCell className="font-medium text-base sm:text-lg py-2 sm:py-4">
+                          Costo Total
+                        </TableCell>
+                        <TableCell className="font-bold text-base sm:text-lg py-2 sm:py-4">
+                          S/ {costoTotal.toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
 
-                <div className="mt-6">
-                  <div className="p-4 bg-gray-50 rounded-md">
-                    <h3 className="font-medium mb-2">
+                <div className="mt-4 sm:mt-6">
+                  <div className="p-3 sm:p-4 bg-gray-50 rounded-md">
+                    <h3 className="font-medium mb-2 text-sm sm:text-base">
                       Distribución del Presupuesto:
                     </h3>
-                    <ul className="list-disc pl-5 space-y-1">
+                    <ul className="list-disc pl-4 sm:pl-5 space-y-1 text-xs sm:text-sm">
                       <li>
                         Dictado de Clases:{" "}
                         <span className="font-bold">
@@ -825,107 +1044,174 @@ function App() {
           </TabsContent>
 
           {/* Pestaña de Cronograma */}
-          <TabsContent value="cronograma" className="space-y-4">
+          <TabsContent
+            value="cronograma"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Cronograma de Actividades</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Cronograma de Actividades
+                  </CardTitle>
                   <CardDescription>Fechas importantes</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Actividad</TableHead>
-                        <TableHead>Inicio</TableHead>
-                        <TableHead>Fin</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Preparativos</TableCell>
-                        <TableCell>1/04/2025</TableCell>
-                        <TableCell>3/04/2025</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Clases</TableCell>
-                        <TableCell>4/04/2025</TableCell>
-                        <TableCell>15/04/2025</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Prueba de Entrada</TableCell>
-                        <TableCell>4/04/2025</TableCell>
-                        <TableCell>-</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Prueba de Salida</TableCell>
-                        <TableCell>15/04/2025</TableCell>
-                        <TableCell>-</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          Redacción de Informe de Nivelación
-                        </TableCell>
-                        <TableCell>10/04/2025</TableCell>
-                        <TableCell>18/04/2025</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Entrega de Informe de Nivelación</TableCell>
-                        <TableCell>19/04/2025</TableCell>
-                        <TableCell>-</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-xs sm:text-sm">
+                            Actividad
+                          </TableHead>
+                          <TableHead className="text-xs sm:text-sm">
+                            Inicio
+                          </TableHead>
+                          <TableHead className="text-xs sm:text-sm">
+                            Fin
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Preparativos
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            1/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            3/04/2025
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Clases
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            4/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            15/04/2025
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Prueba de Entrada
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            4/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            -
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Prueba de Salida
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            15/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            -
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Redacción de Informe de Nivelación
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            10/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            18/04/2025
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            Entrega de Informe de Nivelación
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            19/04/2025
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            -
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Horarios de Clases</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-2xl">
+                    Horarios de Clases
+                  </CardTitle>
                   <CardDescription>
                     Distribución de cursos por horario
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="p-3 bg-indigo-100 rounded-md">
-                      <h3 className="font-medium mb-2">Primer Curso</h3>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="p-3 sm:p-4 bg-purple-100 rounded-md">
+                      <h3 className="font-medium mb-2 text-sm sm:text-base">
+                        Primer Curso
+                      </h3>
                       <div className="space-y-2">
                         <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-indigo-600" />
-                          <span className="font-medium">16:00-16:40 (1)</span>
+                          <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                          <span className="font-medium text-xs sm:text-sm">
+                            16:00-16:40 (1)
+                          </span>
                         </div>
                         <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-indigo-600" />
-                          <span className="font-medium">16:45-17:25 (2)</span>
+                          <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                          <span className="font-medium text-xs sm:text-sm">
+                            16:45-17:25 (2)
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-rose-100 rounded-md">
-                      <h3 className="font-medium mb-2">Segundo Curso</h3>
+                    <div className="p-3 sm:p-4 bg-rose-100 rounded-md">
+                      <h3 className="font-medium mb-2 text-sm sm:text-base">
+                        Segundo Curso
+                      </h3>
                       <div className="space-y-2">
                         <div className="flex items-center p-2 bg-white rounded-md">
                           <Calendar className="mr-2 h-5 w-5 text-rose-600" />
-                          <span className="font-medium">17:30-18:10 (3)</span>
+                          <span className="font-medium text-xs sm:text-sm">
+                            17:30-18:10 (3)
+                          </span>
                         </div>
                         <div className="flex items-center p-2 bg-white rounded-md">
                           <Calendar className="mr-2 h-5 w-5 text-rose-600" />
-                          <span className="font-medium">18:15-18:55 (4)</span>
+                          <span className="font-medium text-xs sm:text-sm">
+                            18:15-18:55 (4)
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-amber-100 rounded-md">
-                      <h3 className="font-medium mb-2">Tercer Curso</h3>
+                    <div className="p-3 sm:p-4 bg-teal-100 rounded-md">
+                      <h3 className="font-medium mb-2 text-sm sm:text-base">
+                        Tercer Curso
+                      </h3>
                       <div className="space-y-2">
                         <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-amber-600" />
-                          <span className="font-medium">19:00-19:40 (5)</span>
+                          <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                          <span className="font-medium text-xs sm:text-sm">
+                            19:00-19:40 (5)
+                          </span>
                         </div>
                         <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-amber-600" />
-                          <span className="font-medium">19:45-20:25 (6)</span>
+                          <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                          <span className="font-medium text-xs sm:text-sm">
+                            19:45-20:25 (6)
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -937,9 +1223,9 @@ function App() {
         </Tabs>
       </main>
 
-      <footer className="bg-white border-t py-4 mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500">
+      <footer className="bg-white border-t py-3 sm:py-4 mt-6 sm:mt-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <p className="text-center text-xs sm:text-sm text-gray-500">
             © 2025 CEPRUNSA - Universidad Nacional de San Agustín de Arequipa
           </p>
         </div>
