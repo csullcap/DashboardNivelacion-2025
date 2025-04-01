@@ -164,7 +164,7 @@ function App() {
 
     // Datos para gráficos y tablas
     const newHorasData: HorasData[] = [
-      { name: "RV", horas: horasRV },
+      { name: "Razonamiento Verbal", horas: horasRV },
       { name: "Biología", horas: horasBiologia },
       { name: "Química", horas: horasQuimica },
       { name: "Matemática", horas: horasMatematica },
@@ -192,21 +192,21 @@ function App() {
     const newHorasPorCursoArea: HorasCursoArea[] = [
       {
         area: "Biomédicas",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "Razonamiento Verbal",
         horas: horasBiomedicas,
       },
       { area: "Biomédicas", curso: "Biología", horas: horasBiologia },
       { area: "Biomédicas", curso: "Química", horas: horasQuimica },
       {
         area: "Ingenierías",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "Razonamiento Verbal",
         horas: horasIngenierias,
       },
       { area: "Ingenierías", curso: "Matemática", horas: horasMatematica },
       { area: "Ingenierías", curso: "Física", horas: horasFisica },
       {
         area: "Sociales",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "Razonamiento Verbal",
         horas: horasSociales,
       },
       { area: "Sociales", curso: "Lenguaje", horas: horasLenguaje },
@@ -219,7 +219,7 @@ function App() {
 
     // Datos para la tabla de horas finales por curso
     const newHorasPorCursoFinal: HorasCursoFinal[] = [
-      { curso: "RV (Comprensión de Lectura)", horas: horasRV },
+      { curso: "Razonamiento Verbal", horas: horasRV },
       { curso: "Biología", horas: horasBiologia },
       { curso: "Química", horas: horasQuimica },
       { curso: "Matemática", horas: horasMatematica },
@@ -839,9 +839,9 @@ function App() {
                       cubrir todas las horas.
                     </li>
                     <li>
-                      El curso de RV (Comprensión de Lectura) requiere la mayor
-                      cantidad de profesores debido a que se imparte en todas
-                      las áreas.
+                      El curso de Razonamiento Verbal (Comprensión de Lectura)
+                      requiere la mayor cantidad de profesores debido a que se
+                      imparte en todas las áreas.
                     </li>
                   </ul>
                 </div>
