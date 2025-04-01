@@ -78,8 +78,8 @@ function App() {
   const [activeTab, setActiveTab] = useState("resumen");
   const [alumnosPorSalon, setAlumnosPorSalon] = useState(100);
 
-  // Datos base
-  const areaData: AreaData[] = [
+  // Datos base con estado para permitir modificación
+  const [areaData, setAreaData] = useState<AreaData[]>([
     {
       name: "Biomédicas",
       postulantes: 621,
@@ -102,7 +102,7 @@ function App() {
         "Razonamiento Matemático",
       ],
     },
-  ];
+  ]);
 
   // Estados para datos calculados
   const [salonesData, setSalonesData] = useState<AreaData[]>([]);
@@ -120,9 +120,17 @@ function App() {
   const [horasPorCursoFinal, setHorasPorCursoFinal] = useState<
     HorasCursoFinal[]
   >([]);
+  const [totalPostulantes, setTotalPostulantes] = useState(0);
 
-  // Recalcular datos cuando cambia el número de alumnos por salón
+  // Recalcular datos cuando cambia el número de alumnos por salón o los postulantes por área
   useEffect(() => {
+    // Calcular total de postulantes
+    const newTotalPostulantes = areaData.reduce(
+      (acc, curr) => acc + curr.postulantes,
+      0
+    );
+    setTotalPostulantes(newTotalPostulantes);
+
     // Calcular salones por área
     const newSalonesData = areaData.map((area) => {
       const salones = Math.ceil(area.postulantes / alumnosPorSalon);
@@ -138,10 +146,10 @@ function App() {
       0
     );
 
-    // Calcular horas por curso por área (20 horas por salón)
-    const horasBiomedicas = newSalonesData[0].salones * 20;
-    const horasIngenierias = newSalonesData[1].salones * 20;
-    const horasSociales = newSalonesData[2].salones * 20;
+    // Calcular horas por curso por área (10 horas por salón)
+    const horasBiomedicas = newSalonesData[0].salones * 10;
+    const horasIngenierias = newSalonesData[1].salones * 10;
+    const horasSociales = newSalonesData[2].salones * 10;
 
     // Calcular horas por curso final
     const horasRV = horasBiomedicas + horasIngenierias + horasSociales;
@@ -164,7 +172,7 @@ function App() {
 
     // Datos para gráficos y tablas
     const newHorasData: HorasData[] = [
-      { name: "Razonamiento Verbal", horas: horasRV },
+      { name: "RV", horas: horasRV },
       { name: "Biología", horas: horasBiologia },
       { name: "Química", horas: horasQuimica },
       { name: "Matemática", horas: horasMatematica },
@@ -192,21 +200,21 @@ function App() {
     const newHorasPorCursoArea: HorasCursoArea[] = [
       {
         area: "Biomédicas",
-        curso: "Razonamiento Verbal",
+        curso: "RV (Comprensión de Lectura)",
         horas: horasBiomedicas,
       },
       { area: "Biomédicas", curso: "Biología", horas: horasBiologia },
       { area: "Biomédicas", curso: "Química", horas: horasQuimica },
       {
         area: "Ingenierías",
-        curso: "Razonamiento Verbal",
+        curso: "RV (Comprensión de Lectura)",
         horas: horasIngenierias,
       },
       { area: "Ingenierías", curso: "Matemática", horas: horasMatematica },
       { area: "Ingenierías", curso: "Física", horas: horasFisica },
       {
         area: "Sociales",
-        curso: "Razonamiento Verbal",
+        curso: "RV (Comprensión de Lectura)",
         horas: horasSociales,
       },
       { area: "Sociales", curso: "Lenguaje", horas: horasLenguaje },
@@ -219,7 +227,7 @@ function App() {
 
     // Datos para la tabla de horas finales por curso
     const newHorasPorCursoFinal: HorasCursoFinal[] = [
-      { curso: "Razonamiento Verbal", horas: horasRV },
+      { curso: "RV (Comprensión de Lectura)", horas: horasRV },
       { curso: "Biología", horas: horasBiologia },
       { curso: "Química", horas: horasQuimica },
       { curso: "Matemática", horas: horasMatematica },
@@ -246,7 +254,7 @@ function App() {
         color: area.color,
       }))
     );
-  }, [alumnosPorSalon]);
+  }, [alumnosPorSalon, areaData]);
 
   const handleAlumnosPorSalonChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -254,6 +262,19 @@ function App() {
     const value = Number.parseInt(e.target.value);
     if (!isNaN(value) && value > 0) {
       setAlumnosPorSalon(value);
+    }
+  };
+
+  // Función para manejar cambios en el número de postulantes por área
+  const handlePostulantesChange = (index: number, value: string) => {
+    const numValue = Number.parseInt(value);
+    if (!isNaN(numValue) && numValue >= 0) {
+      const newAreaData = [...areaData];
+      newAreaData[index] = {
+        ...newAreaData[index],
+        postulantes: numValue,
+      };
+      setAreaData(newAreaData);
     }
   };
 
@@ -285,21 +306,50 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8">
         <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <div className="w-full sm:w-64">
-              <Label htmlFor="alumnosPorSalon">Alumnos por Salón:</Label>
-              <Input
-                id="alumnosPorSalon"
-                type="number"
-                value={alumnosPorSalon}
-                onChange={handleAlumnosPorSalonChange}
-                min="1"
-                className="mt-1"
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="w-full sm:w-64">
+                <Label htmlFor="alumnosPorSalon">Alumnos por Salón:</Label>
+                <Input
+                  id="alumnosPorSalon"
+                  type="number"
+                  value={alumnosPorSalon}
+                  onChange={handleAlumnosPorSalonChange}
+                  min="1"
+                  className="mt-1"
+                />
+              </div>
+              <div className="text-sm text-gray-500 mt-2 sm:mt-0">
+                Modifique este valor para recalcular el número de salones, horas
+                y costos asociados.
+              </div>
             </div>
-            <div className="text-sm text-gray-500 mt-2 sm:mt-0">
-              Modifique este valor para recalcular el número de salones, horas y
-              costos asociados.
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {areaData.map((area, index) => (
+                <div key={index} className="flex flex-col">
+                  <Label
+                    htmlFor={`postulantes-${index}`}
+                    className="flex items-center gap-2"
+                  >
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: area.color }}
+                    ></div>
+                    Postulantes {area.name}:
+                  </Label>
+                  <Input
+                    id={`postulantes-${index}`}
+                    type="number"
+                    value={area.postulantes}
+                    onChange={(e) =>
+                      handlePostulantesChange(index, e.target.value)
+                    }
+                    min="0"
+                    className="mt-1"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -462,7 +512,9 @@ function App() {
                     <h3 className="text-base sm:text-lg font-medium">
                       Total de Postulantes
                     </h3>
-                    <p className="text-2xl sm:text-3xl font-bold">5,519</p>
+                    <p className="text-2xl sm:text-3xl font-bold">
+                      {totalPostulantes.toLocaleString()}
+                    </p>
                     <p className="text-xs sm:text-sm text-gray-500">
                       Distribuidos en {totalSalones} salones
                     </p>
@@ -515,7 +567,7 @@ function App() {
                       {area.name}
                     </CardTitle>
                     <CardDescription>
-                      60 horas de nivelación por salón
+                      30 horas de nivelación por salón
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6 pt-0">
@@ -538,7 +590,7 @@ function App() {
                                 {curso}
                               </TableCell>
                               <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                                20
+                                10
                               </TableCell>
                             </TableRow>
                           ))}
@@ -553,7 +605,7 @@ function App() {
                         Salones: {area.salones}
                       </p>
                       <p className="font-medium text-xs sm:text-sm">
-                        Horas totales: {(area.salones ?? 0) * 60}
+                        Horas totales: {(area.salones ?? 0) * 30}
                       </p>
                     </div>
                   </CardContent>
@@ -602,7 +654,7 @@ function App() {
                             {area.salones}
                           </TableCell>
                           <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                            {((area.salones ?? 0) * 60).toLocaleString()}
+                            {((area.salones ?? 0) * 30).toLocaleString()}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -611,7 +663,7 @@ function App() {
                           TOTAL
                         </TableCell>
                         <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                          5,519
+                          {totalPostulantes.toLocaleString()}
                         </TableCell>
                         <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
                           {totalSalones}
@@ -839,9 +891,9 @@ function App() {
                       cubrir todas las horas.
                     </li>
                     <li>
-                      El curso de Razonamiento Verbal (Comprensión de Lectura)
-                      requiere la mayor cantidad de profesores debido a que se
-                      imparte en todas las áreas.
+                      El curso de RV (Comprensión de Lectura) requiere la mayor
+                      cantidad de profesores debido a que se imparte en todas
+                      las áreas.
                     </li>
                   </ul>
                 </div>
