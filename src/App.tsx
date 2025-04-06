@@ -341,9 +341,7 @@ function App() {
   );
 
   // Datos base con estado para permitir modificación - ahora todas las áreas tienen los mismos cursos
-  const [areaData, setAreaData] = useState<AreaData[]>(
-    calcularTotalesPorArea()
-  );
+  const [areaData] = useState<AreaData[]>(calcularTotalesPorArea());
 
   // Estados para datos calculados
   const [salonesData, setSalonesData] = useState<AreaData[]>([]);
