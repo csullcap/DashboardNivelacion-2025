@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import {
@@ -20,7 +18,6 @@ import {
   TableRow,
 } from "./components/ui/table";
 import { Input } from "./components/ui/input";
-import { Label } from "./components/ui/label";
 import {
   BarChart,
   Bar,
@@ -34,7 +31,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { Calendar } from "lucide-react";
+import { Calendar, Search } from "lucide-react";
 import unsaLogo from "./assets/unsa_logo.png";
 import ceprunsaLogo from "./assets/ceprunsa_logo.png";
 
@@ -74,35 +71,279 @@ interface HorasCursoFinal {
   horas: number;
 }
 
+interface EscuelaSalon {
+  escuela: string;
+  area: string;
+  salon: string;
+  alumnos: number;
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState("resumen");
-  const [alumnosPorSalon, setAlumnosPorSalon] = useState(100);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Datos base
-  const areaData: AreaData[] = [
+  // Datos de escuelas y salones con número de alumnos
+  const escuelasSalones: EscuelaSalon[] = [
     {
-      name: "Biomédicas",
-      postulantes: 621,
-      color: "#4ade80",
-      cursos: ["RV (Comprensión de Lectura)", "Biología", "Química"],
+      escuela: "ESCUELA PROFESIONAL DE BIOLOGÍA",
+      area: "Biomédicas",
+      salon: "B-101",
+      alumnos: 89,
     },
     {
-      name: "Ingenierías",
-      postulantes: 1976,
-      color: "#36a2eb",
-      cursos: ["RV (Comprensión de Lectura)", "Matemática", "Física"],
+      escuela: "ESCUELA PROFESIONAL DE CIENCIAS DE LA NUTRICIÓN",
+      area: "Biomédicas",
+      salon: "B-102",
+      alumnos: 72,
     },
     {
-      name: "Sociales",
-      postulantes: 2922,
-      color: "#fdba74",
-      cursos: [
-        "RV (Comprensión de Lectura)",
-        "Lenguaje",
-        "Razonamiento Matemático",
-      ],
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA PESQUERA",
+      area: "Biomédicas",
+      salon: "B-103",
+      alumnos: 86,
+    },
+    {
+      escuela: "FACULTAD DE ENFERMERÍA",
+      area: "Biomédicas",
+      salon: "B-104",
+      alumnos: 85,
+    },
+    {
+      escuela: "FACULTAD DE AGRONOMÍA",
+      area: "Biomédicas",
+      salon: "B-105",
+      alumnos: 144,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE MINAS",
+      area: "Ingenierías",
+      salon: "I-101",
+      alumnos: 73,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE GEOFÍSICA",
+      area: "Ingenierías",
+      salon: "I-102",
+      alumnos: 53,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA CIVIL",
+      area: "Ingenierías",
+      salon: "I-103",
+      alumnos: 94,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA SANITARIA",
+      area: "Ingenierías",
+      salon: "I-104",
+      alumnos: 32,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE METALÚRGICA",
+      area: "Ingenierías",
+      salon: "I-105",
+      alumnos: 81,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA QUÍMICA",
+      area: "Ingenierías",
+      salon: "I-106",
+      alumnos: 105,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE SISTEMAS",
+      area: "Ingenierías",
+      salon: "I-107",
+      alumnos: 90,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA INDUSTRIAL",
+      area: "Ingenierías",
+      salon: "I-108",
+      alumnos: 149,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE TELECOMUNICACIONES",
+      area: "Ingenierías",
+      salon: "I-109",
+      alumnos: 61,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE CIENCIAS DE LA COMPUTACIÓN",
+      area: "Ingenierías",
+      salon: "I-110",
+      alumnos: 48,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA AMBIENTAL",
+      area: "Ingenierías",
+      salon: "I-111",
+      alumnos: 74,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA DE MATERIALES",
+      area: "Ingenierías",
+      salon: "I-112",
+      alumnos: 80,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERÍA ELECTRÓNICA",
+      area: "Ingenierías",
+      salon: "I-113",
+      alumnos: 106,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE INGENIERIA DE INDUSTRIAS ALIMENTARIAS",
+      area: "Ingenierías",
+      salon: "I-114",
+      alumnos: 116,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE LITERATURA Y LINGÜÍSTICA",
+      area: "Sociales",
+      salon: "S-101",
+      alumnos: 85,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE BANCA Y SEGUROS",
+      area: "Sociales",
+      salon: "S-102",
+      alumnos: 55,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE MARKETING",
+      area: "Sociales",
+      salon: "S-103",
+      alumnos: 43,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE FINANZAS",
+      area: "Sociales",
+      salon: "S-104",
+      alumnos: 74,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE TRABAJO SOCIAL",
+      area: "Sociales",
+      salon: "S-105",
+      alumnos: 76,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE GESTIÓN",
+      area: "Sociales",
+      salon: "S-106",
+      alumnos: 119,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE FILOSOFÍA",
+      area: "Sociales",
+      salon: "S-107",
+      alumnos: 51,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE CONTABILIDAD",
+      area: "Sociales",
+      salon: "S-108",
+      alumnos: 97,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE CONTABILIDAD",
+      area: "Sociales",
+      salon: "S-109",
+      alumnos: 97,
+    },
+    {
+      escuela: "FACULTAD DE CIENCIAS DE LA EDUCACIÓN",
+      area: "Sociales",
+      salon: "S-110",
+      alumnos: 161,
+    },
+    {
+      escuela: "FACULTAD DE CIENCIAS DE LA EDUCACIÓN",
+      area: "Sociales",
+      salon: "S-111",
+      alumnos: 161,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE CIENCIAS DE LA COMUNICACIÓN",
+      area: "Sociales",
+      salon: "S-112",
+      alumnos: 177,
+    },
+    {
+      escuela: "FACULTAD DE DERECHO",
+      area: "Sociales",
+      salon: "S-113",
+      alumnos: 173,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE RELACIONES INDUSTRIALES",
+      area: "Sociales",
+      salon: "S-114",
+      alumnos: 123,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE RELACIONES INDUSTRIALES",
+      area: "Sociales",
+      salon: "S-115",
+      alumnos: 123,
+    },
+    {
+      escuela: "ESCUELA PROFESIONAL DE TURÍSMO Y HOTELERÍA",
+      area: "Sociales",
+      salon: "S-116",
+      alumnos: 75,
     },
   ];
+
+  // Calcular totales por área
+  const calcularTotalesPorArea = () => {
+    const biomedicas = escuelasSalones
+      .filter((item) => item.area === "Biomédicas")
+      .reduce((sum, item) => sum + item.alumnos, 0);
+
+    const ingenierias = escuelasSalones
+      .filter((item) => item.area === "Ingenierías")
+      .reduce((sum, item) => sum + item.alumnos, 0);
+
+    const sociales = escuelasSalones
+      .filter((item) => item.area === "Sociales")
+      .reduce((sum, item) => sum + item.alumnos, 0);
+
+    return [
+      {
+        name: "Biomédicas",
+        postulantes: biomedicas,
+        color: "#4ade80",
+        cursos: ["RV (Comprensión Lectora)", "Matemáticas"],
+      },
+      {
+        name: "Ingenierías",
+        postulantes: ingenierias,
+        color: "#36a2eb",
+        cursos: ["RV (Comprensión Lectora)", "Matemáticas"],
+      },
+      {
+        name: "Sociales",
+        postulantes: sociales,
+        color: "#fdba74",
+        cursos: ["RV (Comprensión Lectora)", "Matemáticas"],
+      },
+    ];
+  };
+
+  // Filtrar escuelas por término de búsqueda
+  const filteredEscuelas = escuelasSalones.filter(
+    (item) =>
+      item.escuela.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.area.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.salon.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Datos base con estado para permitir modificación - ahora todas las áreas tienen los mismos cursos
+  const [areaData, setAreaData] = useState<AreaData[]>(
+    calcularTotalesPorArea()
+  );
 
   // Estados para datos calculados
   const [salonesData, setSalonesData] = useState<AreaData[]>([]);
@@ -120,12 +361,22 @@ function App() {
   const [horasPorCursoFinal, setHorasPorCursoFinal] = useState<
     HorasCursoFinal[]
   >([]);
+  const [totalPostulantes, setTotalPostulantes] = useState(0);
 
-  // Recalcular datos cuando cambia el número de alumnos por salón
+  const ALUMNOS_POR_SALON = 100;
+
+  // Recalcular datos cuando cambia el número de alumnos por salón o los postulantes por área
   useEffect(() => {
+    // Calcular total de postulantes
+    const newTotalPostulantes = areaData.reduce(
+      (acc, curr) => acc + curr.postulantes,
+      0
+    );
+    setTotalPostulantes(newTotalPostulantes);
+
     // Calcular salones por área
     const newSalonesData = areaData.map((area) => {
-      const salones = Math.ceil(area.postulantes / alumnosPorSalon);
+      const salones = Math.ceil(area.postulantes / ALUMNOS_POR_SALON);
       return {
         ...area,
         salones,
@@ -138,45 +389,28 @@ function App() {
       0
     );
 
-    // Calcular horas por curso por área (20 horas por salón)
-    const horasBiomedicas = newSalonesData[0].salones * 20;
-    const horasIngenierias = newSalonesData[1].salones * 20;
-    const horasSociales = newSalonesData[2].salones * 20;
+    // Calcular horas por curso por área (10 horas por salón)
+    const horasBiomedicas = newSalonesData[0].salones * 10;
+    const horasIngenierias = newSalonesData[1].salones * 10;
+    const horasSociales = newSalonesData[2].salones * 10;
 
     // Calcular horas por curso final
     const horasRV = horasBiomedicas + horasIngenierias + horasSociales;
-    const horasBiologia = horasBiomedicas;
-    const horasQuimica = horasBiomedicas;
-    const horasMatematica = horasIngenierias;
-    const horasFisica = horasIngenierias;
-    const horasLenguaje = horasSociales;
-    const horasRazonamiento = horasSociales;
+    const horasMatematicas = horasBiomedicas + horasIngenierias + horasSociales;
 
     // Calcular total de horas
-    const newTotalHoras =
-      horasRV +
-      horasBiologia +
-      horasQuimica +
-      horasMatematica +
-      horasFisica +
-      horasLenguaje +
-      horasRazonamiento;
+    const newTotalHoras = horasRV + horasMatematicas;
 
     // Datos para gráficos y tablas
     const newHorasData: HorasData[] = [
-      { name: "RV", horas: horasRV },
-      { name: "Biología", horas: horasBiologia },
-      { name: "Química", horas: horasQuimica },
-      { name: "Matemática", horas: horasMatematica },
-      { name: "Física", horas: horasFisica },
-      { name: "Lenguaje", horas: horasLenguaje },
-      { name: "Razonamiento Matemático", horas: horasRazonamiento },
+      { name: "RV (Comprensión Lectora)", horas: horasRV },
+      { name: "Matemáticas", horas: horasMatematicas },
     ];
 
-    // Calcular profesores necesarios (máximo 60 horas por profesor)
+    // Calcular profesores necesarios (máximo 20 horas por profesor)
     const newProfesoresData: ProfesorData[] = newHorasData.map((curso) => ({
       name: curso.name,
-      profesores: Math.ceil(curso.horas / 60),
+      profesores: Math.ceil(curso.horas / 20),
     }));
 
     // Calcular costo de monitoreo (500 por monitor/salón)
@@ -192,40 +426,28 @@ function App() {
     const newHorasPorCursoArea: HorasCursoArea[] = [
       {
         area: "Biomédicas",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "RV (Comprensión Lectora)",
         horas: horasBiomedicas,
       },
-      { area: "Biomédicas", curso: "Biología", horas: horasBiologia },
-      { area: "Biomédicas", curso: "Química", horas: horasQuimica },
+      { area: "Biomédicas", curso: "Matemáticas", horas: horasBiomedicas },
       {
         area: "Ingenierías",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "RV (Comprensión Lectora)",
         horas: horasIngenierias,
       },
-      { area: "Ingenierías", curso: "Matemática", horas: horasMatematica },
-      { area: "Ingenierías", curso: "Física", horas: horasFisica },
+      { area: "Ingenierías", curso: "Matemáticas", horas: horasIngenierias },
       {
         area: "Sociales",
-        curso: "RV (Comprensión de Lectura)",
+        curso: "RV (Comprensión Lectora)",
         horas: horasSociales,
       },
-      { area: "Sociales", curso: "Lenguaje", horas: horasLenguaje },
-      {
-        area: "Sociales",
-        curso: "Razonamiento Matemático",
-        horas: horasRazonamiento,
-      },
+      { area: "Sociales", curso: "Matemáticas", horas: horasSociales },
     ];
 
     // Datos para la tabla de horas finales por curso
     const newHorasPorCursoFinal: HorasCursoFinal[] = [
-      { curso: "RV (Comprensión de Lectura)", horas: horasRV },
-      { curso: "Biología", horas: horasBiologia },
-      { curso: "Química", horas: horasQuimica },
-      { curso: "Matemática", horas: horasMatematica },
-      { curso: "Física", horas: horasFisica },
-      { curso: "Lenguaje", horas: horasLenguaje },
-      { curso: "Razonamiento Matemático", horas: horasRazonamiento },
+      { curso: "RV (Comprensión Lectora)", horas: horasRV },
+      { curso: "Matemáticas", horas: horasMatematicas },
     ];
 
     // Actualizar estados
@@ -246,20 +468,24 @@ function App() {
         color: area.color,
       }))
     );
-  }, [alumnosPorSalon]);
-
-  const handleAlumnosPorSalonChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = Number.parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
-      setAlumnosPorSalon(value);
-    }
-  };
+  }, [areaData]);
 
   // Calcular total de profesores
   const totalProfesores =
     profesoresData.reduce((acc, curr) => acc + curr.profesores, 0) || 0;
+
+  // Calcular totales por área para mostrar en la pestaña de distribución
+  const totalAlumnosBiomedicas = escuelasSalones
+    .filter((item) => item.area === "Biomédicas")
+    .reduce((sum, item) => sum + item.alumnos, 0);
+
+  const totalAlumnosIngenierias = escuelasSalones
+    .filter((item) => item.area === "Ingenierías")
+    .reduce((sum, item) => sum + item.alumnos, 0);
+
+  const totalAlumnosSociales = escuelasSalones
+    .filter((item) => item.area === "Sociales")
+    .reduce((sum, item) => sum + item.alumnos, 0);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -284,28 +510,39 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:px-8">
+        {/* Modificar la estructura de los tabs para asegurar que el contenido se muestre correctamente */}
+        {/* Cambiar la estructura de Tabs para que sea más robusta */}
         <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <div className="w-full sm:w-64">
-              <Label htmlFor="alumnosPorSalon">Alumnos por Salón:</Label>
-              <Input
-                id="alumnosPorSalon"
-                type="number"
-                value={alumnosPorSalon}
-                onChange={handleAlumnosPorSalonChange}
-                min="1"
-                className="mt-1"
-              />
-            </div>
-            <div className="text-sm text-gray-500 mt-2 sm:mt-0">
-              Modifique este valor para recalcular el número de salones, horas y
-              costos asociados.
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold">
+              Resumen de Postulantes por Área
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {areaData.map((area, index) => (
+                <div
+                  key={index}
+                  className="p-3 rounded-md"
+                  style={{ backgroundColor: `${area.color}20` }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: area.color }}
+                    ></div>
+                    <span className="font-medium">{area.name}</span>
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {area.postulantes.toLocaleString()} postulantes
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {Math.ceil(area.postulantes / 100)} salones (100
+                    alumnos/salón)
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-
-        {/* Modificar la estructura de los tabs para asegurar que el contenido se muestre correctamente */}
-        {/* Cambiar la estructura de Tabs para que sea más robusta */}
         <Tabs
           defaultValue="resumen"
           value={activeTab}
@@ -325,12 +562,13 @@ function App() {
                 <option value="desglose">Desglose de Horas</option>
                 <option value="costeo">Costeo</option>
                 <option value="cronograma">Cronograma</option>
+                <option value="distribucion">Distribución</option>
               </select>
             </div>
           </div>
 
           <div className="hidden sm:block bg-white rounded-t-lg shadow-sm relative z-10">
-            <TabsList className="grid grid-cols-5 w-full bg-white p-0 rounded-t-lg">
+            <TabsList className="grid grid-cols-6 w-full bg-white p-0 rounded-t-lg">
               <TabsTrigger
                 value="resumen"
                 className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
@@ -360,6 +598,12 @@ function App() {
                 className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
               >
                 Cronograma
+              </TabsTrigger>
+              <TabsTrigger
+                value="distribucion"
+                className="text-sm py-3 rounded-none data-[state=active]:bg-gray-100"
+              >
+                Distribución
               </TabsTrigger>
             </TabsList>
           </div>
@@ -462,7 +706,9 @@ function App() {
                     <h3 className="text-base sm:text-lg font-medium">
                       Total de Postulantes
                     </h3>
-                    <p className="text-2xl sm:text-3xl font-bold">5,519</p>
+                    <p className="text-2xl sm:text-3xl font-bold">
+                      {totalPostulantes.toLocaleString()}
+                    </p>
                     <p className="text-xs sm:text-sm text-gray-500">
                       Distribuidos en {totalSalones} salones
                     </p>
@@ -475,7 +721,7 @@ function App() {
                       {totalHoras.toLocaleString()}
                     </p>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      Distribuidas en 7 cursos
+                      Distribuidas en 2 cursos
                     </p>
                   </div>
                   <div className="bg-amber-50 p-3 sm:p-4 rounded-lg">
@@ -515,7 +761,7 @@ function App() {
                       {area.name}
                     </CardTitle>
                     <CardDescription>
-                      60 horas de nivelación por salón
+                      20 horas de nivelación por salón
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6 pt-0">
@@ -538,7 +784,7 @@ function App() {
                                 {curso}
                               </TableCell>
                               <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                                20
+                                10
                               </TableCell>
                             </TableRow>
                           ))}
@@ -553,7 +799,7 @@ function App() {
                         Salones: {area.salones}
                       </p>
                       <p className="font-medium text-xs sm:text-sm">
-                        Horas totales: {(area.salones ?? 0) * 60}
+                        Horas totales: {(area.salones ?? 0) * 20}
                       </p>
                     </div>
                   </CardContent>
@@ -566,9 +812,7 @@ function App() {
                 <CardTitle className="text-lg sm:text-2xl">
                   Cálculo de Salones
                 </CardTitle>
-                <CardDescription>
-                  {alumnosPorSalon} alumnos por salón
-                </CardDescription>
+                <CardDescription>100 alumnos por salón</CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="overflow-x-auto">
@@ -602,7 +846,7 @@ function App() {
                             {area.salones}
                           </TableCell>
                           <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                            {((area.salones ?? 0) * 60).toLocaleString()}
+                            {((area.salones ?? 0) * 20).toLocaleString()}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -611,7 +855,7 @@ function App() {
                           TOTAL
                         </TableCell>
                         <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                          5,519
+                          {totalPostulantes.toLocaleString()}
                         </TableCell>
                         <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
                           {totalSalones}
@@ -662,7 +906,7 @@ function App() {
                             {index === 0 ||
                             horasPorCursoArea[index - 1].area !== item.area ? (
                               <TableCell
-                                rowSpan={3}
+                                rowSpan={2}
                                 className="font-medium text-xs sm:text-sm py-2 sm:py-4"
                               >
                                 {item.area}
@@ -778,7 +1022,7 @@ function App() {
                   Profesores por Curso
                 </CardTitle>
                 <CardDescription>
-                  Considerando máximo 60 horas por profesor
+                  Considerando máximo 20 horas por profesor
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
@@ -832,16 +1076,15 @@ function App() {
                   </h3>
                   <ul className="list-disc pl-4 sm:pl-5 space-y-1 text-xs sm:text-sm">
                     <li>
-                      Cada profesor puede dictar un máximo de 60 horas en total.
+                      Cada profesor puede dictar un máximo de 20 horas en total.
                     </li>
                     <li>
                       Se requieren {totalProfesores} profesores en total para
                       cubrir todas las horas.
                     </li>
                     <li>
-                      El curso de RV (Comprensión de Lectura) requiere la mayor
-                      cantidad de profesores debido a que se imparte en todas
-                      las áreas.
+                      Ambos cursos requieren la misma cantidad de profesores ya
+                      que se imparten en todas las áreas.
                     </li>
                   </ul>
                 </div>
@@ -1156,69 +1399,354 @@ function App() {
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6 pt-0">
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="p-3 sm:p-4 bg-purple-100 rounded-md">
+                    <div className="p-3 sm:p-4 bg-gray-100 rounded-md">
                       <h3 className="font-medium mb-2 text-sm sm:text-base">
-                        Primer Curso
+                        Configuración A - Salones Grupo 1
                       </h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-purple-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            16:00-16:40 (1)
-                          </span>
+                      <div className="space-y-4">
+                        <div className="p-3 sm:p-4 bg-purple-100 rounded-md">
+                          <h4 className="font-medium mb-2 text-xs sm:text-sm">
+                            RV (Comprensión Lectora)
+                          </h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                16:00-16:40 (1)
+                              </span>
+                            </div>
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                16:45-17:25 (2)
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-purple-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            16:45-17:25 (2)
-                          </span>
+
+                        <div className="p-3 sm:p-4 bg-teal-100 rounded-md">
+                          <h4 className="font-medium mb-2 text-xs sm:text-sm">
+                            Matemáticas
+                          </h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                17:30-18:10 (3)
+                              </span>
+                            </div>
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                18:15-18:55 (4)
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-3 sm:p-4 bg-rose-100 rounded-md">
+                    <div className="p-3 sm:p-4 bg-gray-100 rounded-md">
                       <h3 className="font-medium mb-2 text-sm sm:text-base">
-                        Segundo Curso
+                        Configuración B - Salones Grupo 2
                       </h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-rose-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            17:30-18:10 (3)
-                          </span>
+                      <div className="space-y-4">
+                        <div className="p-3 sm:p-4 bg-teal-100 rounded-md">
+                          <h4 className="font-medium mb-2 text-xs sm:text-sm">
+                            Matemáticas
+                          </h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                16:00-16:40 (1)
+                              </span>
+                            </div>
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-teal-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                16:45-17:25 (2)
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-rose-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            18:15-18:55 (4)
-                          </span>
+
+                        <div className="p-3 sm:p-4 bg-purple-100 rounded-md">
+                          <h4 className="font-medium mb-2 text-xs sm:text-sm">
+                            RV (Comprensión Lectora)
+                          </h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                17:30-18:10 (3)
+                              </span>
+                            </div>
+                            <div className="flex items-center p-2 bg-white rounded-md">
+                              <Calendar className="mr-2 h-5 w-5 text-purple-600" />
+                              <span className="font-medium text-xs sm:text-sm">
+                                18:15-18:55 (4)
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-3 sm:p-4 bg-teal-100 rounded-md">
+                    <div className="p-3 sm:p-4 bg-blue-50 rounded-md">
                       <h3 className="font-medium mb-2 text-sm sm:text-base">
-                        Tercer Curso
+                        Notas:
                       </h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-teal-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            19:00-19:40 (5)
-                          </span>
-                        </div>
-                        <div className="flex items-center p-2 bg-white rounded-md">
-                          <Calendar className="mr-2 h-5 w-5 text-teal-600" />
-                          <span className="font-medium text-xs sm:text-sm">
-                            19:45-20:25 (6)
-                          </span>
-                        </div>
-                      </div>
+                      <ul className="list-disc pl-4 sm:pl-5 space-y-1 text-xs sm:text-sm">
+                        <li>
+                          Los salones se distribuyen en dos configuraciones para
+                          optimizar recursos.
+                        </li>
+                        <li>
+                          Cada salón recibe 2 horas académicas de cada curso.
+                        </li>
+                        <li>
+                          La distribución permite una mejor asignación de
+                          profesores y aulas.
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Pestaña de Distribución */}
+          <TabsContent
+            value="distribucion"
+            className="space-y-4 mt-0 bg-white p-4 sm:p-6 rounded-b-lg shadow-sm relative z-0"
+          >
+            <Card>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Distribución de Salones por Escuela
+                </CardTitle>
+                <CardDescription>
+                  Asignación de salones para cada escuela profesional
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Buscar por escuela, área o salón..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs sm:text-sm">
+                          Escuela Profesional
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Área
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Salón
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Alumnos
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredEscuelas.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {item.escuela}
+                          </TableCell>
+                          <TableCell
+                            className={`text-xs sm:text-sm py-2 sm:py-4 ${
+                              item.area === "Biomédicas"
+                                ? "text-green-600"
+                                : item.area === "Ingenierías"
+                                ? "text-blue-600"
+                                : "text-orange-600"
+                            }`}
+                          >
+                            {item.area}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4 font-medium">
+                            {item.salon}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                            {item.alumnos}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-md">
+                  <h3 className="font-medium mb-2 text-sm sm:text-base">
+                    Resumen de Distribución:
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+                    <div className="p-2 sm:p-3 bg-green-100 rounded-md">
+                      <h4 className="font-medium text-xs sm:text-sm">
+                        Biomédicas
+                      </h4>
+                      <p className="text-xs sm:text-sm">
+                        {
+                          escuelasSalones.filter((e) => e.area === "Biomédicas")
+                            .length
+                        }{" "}
+                        escuelas
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        {totalAlumnosBiomedicas} alumnos
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        Salones: B-101 a B-105
+                      </p>
+                    </div>
+                    <div className="p-2 sm:p-3 bg-blue-100 rounded-md">
+                      <h4 className="font-medium text-xs sm:text-sm">
+                        Ingenierías
+                      </h4>
+                      <p className="text-xs sm:text-sm">
+                        {
+                          escuelasSalones.filter(
+                            (e) => e.area === "Ingenierías"
+                          ).length
+                        }{" "}
+                        escuelas
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        {totalAlumnosIngenierias} alumnos
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        Salones: I-101 a I-114
+                      </p>
+                    </div>
+                    <div className="p-2 sm:p-3 bg-orange-100 rounded-md">
+                      <h4 className="font-medium text-xs sm:text-sm">
+                        Sociales
+                      </h4>
+                      <p className="text-xs sm:text-sm">
+                        {
+                          escuelasSalones.filter((e) => e.area === "Sociales")
+                            .length
+                        }{" "}
+                        escuelas
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        {totalAlumnosSociales} alumnos
+                      </p>
+                      <p className="text-xs sm:text-sm">
+                        Salones: S-101 a S-116
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-2xl">
+                  Distribución de Horarios por Salón
+                </CardTitle>
+                <CardDescription>
+                  Configuración de horarios para cada grupo de salones
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs sm:text-sm">
+                          Grupo
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Salones
+                        </TableHead>
+                        <TableHead className="text-xs sm:text-sm">
+                          Horario
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4 font-medium">
+                          Grupo 1
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          B-101, B-103, B-105, I-101, I-103, I-105, I-107,
+                          I-109, I-111, I-113, S-101, S-103, S-105, S-107,
+                          S-109, S-111, S-113, S-115
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          <span className="block">
+                            16:00-17:25: RV (Comprensión Lectora)
+                          </span>
+                          <span className="block">
+                            17:30-18:55: Matemáticas
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4 font-medium">
+                          Grupo 2
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          B-102, B-104, I-102, I-104, I-106, I-108, I-110,
+                          I-112, I-114, S-102, S-104, S-106, S-108, S-110,
+                          S-112, S-114, S-116
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
+                          <span className="block">
+                            16:00-17:25: Matemáticas
+                          </span>
+                          <span className="block">
+                            17:30-18:55: RV (Comprensión Lectora)
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-md">
+                  <h3 className="font-medium mb-2 text-sm sm:text-base">
+                    Notas sobre la distribución:
+                  </h3>
+                  <ul className="list-disc pl-4 sm:pl-5 space-y-1 text-xs sm:text-sm">
+                    <li>
+                      La distribución en dos grupos permite optimizar el uso de
+                      aulas y profesores.
+                    </li>
+                    <li>
+                      Cada salón recibe 2 horas académicas de cada curso (4
+                      horas en total).
+                    </li>
+                    <li>
+                      Los salones se han distribuido de manera equilibrada entre
+                      los dos grupos.
+                    </li>
+                    <li>
+                      Esta configuración permite que los profesores puedan rotar
+                      entre diferentes salones.
+                    </li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
