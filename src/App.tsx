@@ -411,8 +411,8 @@ function App() {
       profesores: Math.ceil(curso.horas / 20),
     }));
 
-    // Calcular costo de monitoreo (500 por monitor/salón)
-    const newCostoMonitoreo = newTotalSalones * 500;
+    // Calcular costo de monitoreo (300 por monitor/salón)
+    const newCostoMonitoreo = newTotalSalones * 300;
 
     // Calcular costo de dictado (40 soles por hora)
     const newCostoDictado = newTotalHoras * 40;
@@ -1190,7 +1190,7 @@ function App() {
                             Pago por Monitor
                           </TableCell>
                           <TableCell className="text-xs sm:text-sm py-2 sm:py-4">
-                            S/ 500.00
+                            S/ 300.00
                           </TableCell>
                         </TableRow>
                         <TableRow>
